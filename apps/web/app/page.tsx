@@ -1,13 +1,29 @@
+"use client"
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  async function createRepl() {
+    const response = await fetch("/api/repl/start", {
+      method: "POST",
+      body: JSON.stringify({ replId: "123" }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    router.push(`/code/${data.replId}`);
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl font-bold">ReplIt</h1>
       <p className="text-lg text-gray-500">
         A simple way to share your code with the world.
       </p>
-      <Button className="mt-4 bg-blue-500 text-white">Create Repl</Button>
+      <Button className="mt-4 bg-blue-500 text-white" onClick={createRepl}>Create Repl</Button>
     </div>
   );
 }

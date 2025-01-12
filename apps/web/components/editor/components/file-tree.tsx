@@ -1,7 +1,6 @@
-import React, {useState} from 'react'
-import {Directory, File, sortDir, sortFile} from "../utils/file-manager";
-import {getIcon} from "./icon";
-import styled from "@emotion/styled";
+import React, { useState } from 'react'
+import { Directory, File, sortDir, sortFile } from "../utils/file-manager";
+import { getIcon } from "./icon";
 
 interface FileTreeProps {
   rootDir: Directory;   // 根目录
@@ -10,7 +9,7 @@ interface FileTreeProps {
 }
 
 export const FileTree = (props: FileTreeProps) => {
-  return <SubTree directory={props.rootDir} {...props}/>
+  return <SubTree directory={props.rootDir} {...props} />
 }
 
 interface SubTreeProps {
@@ -30,7 +29,7 @@ const SubTree = (props: SubTreeProps) => {
               <DirDiv
                 directory={dir}
                 selectedFile={props.selectedFile}
-                onSelect={props.onSelect}/>
+                onSelect={props.onSelect} />
             </React.Fragment>
           ))
       }
@@ -42,7 +41,7 @@ const SubTree = (props: SubTreeProps) => {
               <FileDiv
                 file={file}
                 selectedFile={props.selectedFile}
-                onClick={() => props.onSelect(file)}/>
+                onClick={() => props.onSelect(file)} />
             </React.Fragment>
           ))
       }
@@ -50,7 +49,7 @@ const SubTree = (props: SubTreeProps) => {
   )
 }
 
-const FileDiv = ({file, icon, selectedFile, onClick}: {
+const FileDiv = ({ file, icon, selectedFile, onClick }: {
   file: File | Directory; // 当前文件
   icon?: string;          // 图标名称
   selectedFile: File | undefined;     // 选中的文件
@@ -59,36 +58,20 @@ const FileDiv = ({file, icon, selectedFile, onClick}: {
   const isSelected = (selectedFile && selectedFile.id === file.id) as boolean;
   const depth = file.depth;
   return (
-    <Div
-      depth={depth}
-      isSelected={isSelected}
+    <div
+      className="flex items-center p-2 bg-transparent hover:cursor-pointer hover:bg-gray-800"
       onClick={onClick}>
       <FileIcon
         name={icon}
-        extension={file.name.split('.').pop() || ""}/>
-      <span style={{marginLeft: 1}}>
+        extension={file.name.split('.').pop() || ""} />
+      <span style={{ marginLeft: 1 }}>
         {file.name}
       </span>
-    </Div>
+    </div>
   )
 }
 
-const Div = styled.div<{
-  depth: number;
-  isSelected: boolean;
-}>`
-  display: flex;
-  align-items: center;
-  padding-left: ${props => props.depth * 16}px;
-  background-color: ${props => props.isSelected ? "#242424" : "transparent"};
-
-  :hover {
-    cursor: pointer;
-    background-color: #242424;
-  }
-`
-
-const DirDiv = ({directory, selectedFile, onSelect}: {
+const DirDiv = ({ directory, selectedFile, onSelect }: {
   directory: Directory;  // 当前目录
   selectedFile: File | undefined;    // 选中的文件
   onSelect: (file: File) => void;  // 点击事件
@@ -108,13 +91,13 @@ const DirDiv = ({directory, selectedFile, onSelect}: {
             onSelect(directory)
           }
           setOpen(!open)
-        }}/>
+        }} />
       {
         open ? (
           <SubTree
             directory={directory}
             selectedFile={selectedFile}
-            onSelect={onSelect}/>
+            onSelect={onSelect} />
         ) : null
       }
     </>
@@ -142,20 +125,11 @@ const isChildSelected = (directory: Directory, selectedFile: File) => {
   return res;
 }
 
-const FileIcon = ({extension, name}: { name?: string, extension?: string }) => {
+const FileIcon = ({ extension, name }: { name?: string, extension?: string }) => {
   let icon = getIcon(extension || "", name || "");
   return (
-    <Span>
+    <span className="flex w-8 h-8 justify-center items-center">
       {icon}
-    </Span>
+    </span>
   )
 }
-
-const Span = styled.span`
-  display: flex;
-  width: 32px;
-  height: 32px;
-  justify-content: center;
-  align-items: center;
-`
-

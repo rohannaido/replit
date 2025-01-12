@@ -16,9 +16,9 @@ export const Code = ({ selectedFile, socket }: { selectedFile: File | undefined,
   else if (language === "py")
     language = "python"
 
-  function debounce(func: (value: string) => void, wait: number) {
-    let timeout: number;
-    return (value: string) => {
+  function debounce(func: (value: string | undefined) => void, wait: number) {
+    let timeout: NodeJS.Timeout;
+    return (value: string | undefined) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         func(value);
@@ -32,11 +32,13 @@ export const Code = ({ selectedFile, socket }: { selectedFile: File | undefined,
       language={language}
       value={code}
       theme="vs-dark"
-      onChange={debounce((value) => {
-        // Should send diffs, for now sending the whole file
-        // PR and win a bounty!
-        socket.emit("updateContent", { path: selectedFile.path, content: value });
-      }, 500)}
+    // onChange={debounce((value) => {
+    //   // Should send diffs, for now sending the whole file
+    //   // PR and win a bounty!
+    //   if (value) {
+    //     socket.emit("updateContent", { path: selectedFile.path, content: value });
+    //   }
+    // }, 500)}
     />
   )
 }

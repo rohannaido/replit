@@ -1,20 +1,11 @@
-import React, {ReactNode} from 'react';
-import styled from "@emotion/styled";
+import React, { ReactNode } from 'react';
 
-export const Sidebar = ({children}: { children: ReactNode }) => {
+export const Sidebar = ({ children }: { children: ReactNode }) => {
   return (
-    <Aside>
+    <aside className="w-64 h-full border-r border-gray-800 p-2">
       {children}
-    </Aside>
+    </aside>
   )
 }
-
-const Aside = styled.aside`
-  width: 250px;
-  height: 100vh;
-  border-right: 2px solid;
-  border-color: #242424;
-  padding-top: 3px;
-`
 
 export default Sidebar
