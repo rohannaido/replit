@@ -30,13 +30,13 @@ export const Editor = ({
     return (
         <div className="flex">
             <div className="flex-1">
-                {/* <Sidebar>
+                <Sidebar>
                     <FileTree
                         rootDir={rootDir}
                         selectedFile={selectedFile}
                         onSelect={onSelect}
                     />
-                </Sidebar> */}
+                </Sidebar>
                 <Code socket={socket} selectedFile={selectedFile} />
             </div>
         </div>

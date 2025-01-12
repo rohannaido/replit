@@ -6,15 +6,19 @@ export default function Home() {
   const router = useRouter();
 
   async function createRepl() {
-    const response = await fetch("/api/repl/start", {
-      method: "POST",
-      body: JSON.stringify({ replId: "123" }),
-    });
+    try {
+      const response = await fetch("/api/repl/start", {
+        method: "POST",
+        body: JSON.stringify({ replId: "a-124" }),
+      });
 
-    const data = await response.json();
-    console.log(data);
+      const data = await response.json();
+      console.log(data);
 
-    router.push(`/code/${data.replId}`);
+      router.push(`/code/${data.replId}`);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
