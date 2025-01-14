@@ -15,7 +15,7 @@ interface CommonProps {
 }
 
 export interface File extends CommonProps {
-  
+
 }
 
 export interface RemoteFile {
@@ -83,9 +83,11 @@ export function buildFileTree(data: RemoteFile[]): Directory {
       else rootDir.files.push(value as File);
     } else {
       const parentDir = cache.get(value.parentId as string) as Directory;
+      // if (parentDir) {
       if (value.type === Type.DIRECTORY)
         parentDir.dirs.push(value as Directory);
       else parentDir.files.push(value as File);
+      // }
     }
   });
 

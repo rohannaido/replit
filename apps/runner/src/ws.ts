@@ -1,6 +1,9 @@
 import { Server, Socket } from "socket.io";
 import http from "node:http";
 import { TerminalManager } from "./pty";
+import { fetchDir, fetchFileContent } from "./fs";
+
+const BASE_DIR = "/home/falcon/dev/projects/parent-pal";
 
 const terminalManager = new TerminalManager();
 export function createWsServer(httpServer: http.Server, options: any) {
@@ -30,5 +33,15 @@ function initHandler(socket: Socket, replId: string) {
 
     socket.on("terminalData", (data) => {
         terminalManager.writeToPty(socket.id, data);
+    });
+
+    socket.on("requestDir", async (dir, callback) => {
+        const content = await fetchDir(`${BASE_DIR}${dir}`, dir);
+        callback(content);
+    });
+
+    socket.on("requestFile", async (file, callback) => {
+        const content = await fetchFileContent(`${BASE_DIR}${file}`);
+        callback(content);
     });
 }

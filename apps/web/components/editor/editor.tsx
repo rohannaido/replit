@@ -29,15 +29,19 @@ export const Editor = ({
 
     return (
         <div className="flex">
-            <div className="flex-1">
-                <Sidebar>
-                    <FileTree
-                        rootDir={rootDir}
-                        selectedFile={selectedFile}
-                        onSelect={onSelect}
-                    />
-                </Sidebar>
-                <Code socket={socket} selectedFile={selectedFile} />
+            <div className="flex-1 flex">
+                <div className="w-64">
+                    <Sidebar>
+                        <FileTree
+                            rootDir={rootDir}
+                            selectedFile={selectedFile}
+                            onSelect={onSelect}
+                        />
+                    </Sidebar>
+                </div>
+                <div className="flex-1">
+                    <Code socket={socket} selectedFile={selectedFile} />
+                </div>
             </div>
         </div>
     );
