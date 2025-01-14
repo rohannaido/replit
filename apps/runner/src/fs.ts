@@ -14,3 +14,7 @@ export async function fetchFileContent(filePath: string) {
     const content = await fs.readFile(filePath, "utf-8");
     return content;
 }
+
+export async function writeFileContent(filePath: string, content: string) {
+    await fs.writeFile(filePath, content);
+}

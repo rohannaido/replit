@@ -32,10 +32,6 @@ export const Code = ({ selectedFile, socket }: { selectedFile: File | undefined,
     };
   }
 
-  console.log("MEMO > before editor");
-  console.log(code);
-  console.log(language);
-
   return (
     <>
       {/* <Editor height="90vh" defaultLanguage="javascript" defaultValue="// some comment" /> */}
@@ -45,10 +41,8 @@ export const Code = ({ selectedFile, socket }: { selectedFile: File | undefined,
         value={code}
         theme="vs-dark"
         onChange={debounce((value) => {
-          // Should send diffs, for now sending the whole file
-          // PR and win a bounty!
           if (value) {
-            // socket.emit("updateContent", { path: selectedFile.path, content: value });
+            socket.emit("updateContent", { path: selectedFile.path, content: value });
           }
         }, 500)}
       />

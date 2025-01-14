@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import http from "node:http";
 import { TerminalManager } from "./pty";
-import { fetchDir, fetchFileContent } from "./fs";
+import { fetchDir, fetchFileContent, writeFileContent } from "./fs";
 
 const BASE_DIR = "/home/falcon/dev/projects/parent-pal";
 
@@ -43,5 +43,9 @@ function initHandler(socket: Socket, replId: string) {
     socket.on("requestFile", async (file, callback) => {
         const content = await fetchFileContent(`${BASE_DIR}${file}`);
         callback(content);
+    });
+
+    socket.on("updateContent", async (data) => {
+        await writeFileContent(`${BASE_DIR}${data.path}`, data.content);
     });
 }
