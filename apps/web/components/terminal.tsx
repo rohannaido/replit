@@ -50,5 +50,5 @@ export const TerminalComponent = ({ socket }: { socket: Socket }) => {
         }
     }, [terminalRef]);
 
-    return <div style={{ width: "40vw", height: "400px", textAlign: "left" }} ref={terminalRef}></div>
+    return <div className="h-2/4" ref={terminalRef}></div>
 }

@@ -6,11 +6,14 @@ import { Editor } from "@/components/editor/editor";
 import { TerminalComponent } from "@/components/terminal";
 import { useEffect, useState } from "react";
 import { Directory, File, RemoteFile, Type } from "@/components/editor/utils/file-manager";
+import { Button } from "@/components/ui/button";
+import { Output } from "@/components/output";
 
 export default function CodePage({ params }: { params: { replId: string } }) {
     const socket = useSocket();
     const [files, setFiles] = useState<RemoteFile[]>([]);
     const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+    const [showOutput, setShowOutput] = useState<boolean>(false);
 
     useEffect(() => {
         socket.emit("requestDir", "", (content: any) => {
@@ -34,13 +37,21 @@ export default function CodePage({ params }: { params: { replId: string } }) {
     }
 
     return (
-        <div className="flex m-2">
-            <div style={{ width: "60%", height: "600px", textAlign: "left" }}>
-                <Editor selectedFile={selectedFile} files={files} onSelect={handleFileSelect} socket={socket} />
+        <>
+            <div className="flex justify-end">
+                <Button className="p-2 m-2 bg-blue-500 text-white" onClick={() => setShowOutput(!showOutput)}>See output</Button>
             </div>
-            <div style={{ width: "40%", height: "600px", textAlign: "left" }}>
-                <TerminalComponent socket={socket} />
+            <div className="flex m-2">
+                <div className="h-screen w-3/5">
+                    <Editor selectedFile={selectedFile} files={files} onSelect={handleFileSelect} socket={socket} />
+                </div>
+                <div className="flex flex-col w-2/5">
+                    {showOutput || <div className="h-2/4 bg-gray-500">
+                        <Output />
+                    </div>}
+                    <TerminalComponent socket={socket} />
+                </div>
             </div>
-        </div>
+        </>
     );
 }
