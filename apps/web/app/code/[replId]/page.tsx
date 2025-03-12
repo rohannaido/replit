@@ -16,20 +16,22 @@ export default function CodePage({ params }: { params: { replId: string } }) {
     const [showOutput, setShowOutput] = useState<boolean>(false);
 
     useEffect(() => {
-        socket.emit("requestDir", "", (content: any) => {
-            setFiles(content);
-        });
-    }, []);
+        if (socket) {
+            socket.emit("requestDir", "", (content: any) => {
+                setFiles(content);
+            });
+        }
+    }, [socket]);
 
     const handleFileSelect = (file: File | Directory | undefined) => {
         if (!file?.path) return;
 
         if (file?.type === Type.DIRECTORY) {
-            socket.emit("requestDir", `${file.path}`, (content: any) => {
+            socket?.emit("requestDir", `${file.path}`, (content: any) => {
                 setFiles(prevFiles => [...prevFiles, ...content]);
             });
         } else {
-            socket.emit("requestFile", `${file?.path}`, (content: any) => {
+            socket?.emit("requestFile", `${file?.path}`, (content: any) => {
                 file.content = content;
                 setSelectedFile(file);
             });
@@ -37,7 +39,7 @@ export default function CodePage({ params }: { params: { replId: string } }) {
     }
 
     return (
-        <>
+        socket && <>
             <div className="flex justify-end">
                 <Button className="p-2 m-2 bg-blue-500 text-white" onClick={() => setShowOutput(!showOutput)}>See output</Button>
             </div>
@@ -46,7 +48,7 @@ export default function CodePage({ params }: { params: { replId: string } }) {
                     <Editor selectedFile={selectedFile} files={files} onSelect={handleFileSelect} socket={socket} />
                 </div>
                 <div className="flex flex-col w-2/5">
-                    {showOutput || <div className="h-2/4 bg-gray-500">
+                    {showOutput && <div className="">
                         <Output />
                     </div>}
                     <TerminalComponent socket={socket} />
