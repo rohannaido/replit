@@ -14,11 +14,50 @@ spec:
       labels:
         app: service_name
     spec:
+      volumes:
+        - name: workspace-volume
+          emptyDir: {}
+      initContainers:
+        - name: copy-s3-resources
+          image: amazon/aws-cli
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              aws s3 cp s3://replit-project/code/service_name/ /workspace/ --recursive &&
+              echo "Resources copied from S3";
+          env:
+            - name: AWS_REGION
+              value: "ap-southeast-2"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+          volumeMounts:
+            - name: workspace-volume
+              mountPath: /workspace
       containers:
       - name: replit-runner
         image: rohannaido/replit-runner
         ports:
         - containerPort: 4000
+        - containerPort: 4001
+        volumeMounts:
+        - name: workspace-volume
+          mountPath: /workspace
+        resources:
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+
 ---
 apiVersion: v1
 kind: Service
@@ -29,24 +68,37 @@ spec:
     app: service_name
   ports:
     - protocol: TCP
+      name: ws
       port: 4000
       targetPort: 4000
+    - protocol: TCP
+      name: user
+      port: 4001
+      targetPort: 4001
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: service_name
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
   - http:
       paths:
-      - path: /testpath
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: service_name
             port:
               number: 4000
+      - path: /output
+        pathType: Prefix
+        backend:
+          service:
+            name: service_name
+            port:
+              number: 4001
