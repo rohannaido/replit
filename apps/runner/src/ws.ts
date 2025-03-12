@@ -3,7 +3,7 @@ import http from "node:http";
 import { TerminalManager } from "./pty";
 import { fetchDir, fetchFileContent, writeFileContent } from "./fs";
 
-const BASE_DIR = "/home/falcon/dev/projects/parent-pal";
+const BASE_DIR = "/workspace";
 
 const terminalManager = new TerminalManager();
 export function createWsServer(httpServer: http.Server, options: any) {
